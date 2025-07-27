@@ -3,10 +3,11 @@ import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validator
 import { Router } from '@angular/router';
 import { Users } from '../../core/services/users';
 import { HttpErrorResponse } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule , CommonModule],
   templateUrl: './login.html',
   styleUrl: './login.css'
 })
@@ -31,7 +32,9 @@ export class Login implements OnInit {
     });
   }
 
-  loginSubmit() {
+  loginSubmit() : void{
+    console.log("Login called ");
+    
     if (this.loginForm.valid) {
       this.isLoading = true;
 

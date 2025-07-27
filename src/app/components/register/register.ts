@@ -1,18 +1,19 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Users } from '../../core/services/users';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule , CommonModule],
+  standalone: true,
+  imports: [ReactiveFormsModule , CommonModule ],
   templateUrl: './register.html',
   styleUrl: './register.css'
 })
-export class Register  implements OnInit{
+export class Register  implements OnInit , OnDestroy{
 
   registerForm! : FormGroup
   registerFormSubmit! : Subscription
@@ -25,6 +26,7 @@ export class Register  implements OnInit{
 
   ngOnInit(): void {
     this.CallForm()
+    
   }
 
 
@@ -34,7 +36,7 @@ export class Register  implements OnInit{
       email: ['',[Validators.required , Validators.email]],
       password: ['' , Validators.required],
       confirmPassword: ['' ,Validators.required],
-      phone: ['',Validators.required],
+      phone: [''],
       gender: ['', Validators.required],       
       date: ['', Validators.required] 
     },
@@ -44,12 +46,19 @@ export class Register  implements OnInit{
   }
 
 
-  registerSubmit(){
+  registerSubmit() : void{
+    console.log('registerSubmit called'); 
+
+    console.log(this.registerForm.valid);
+    console.log(this.registerForm.value);
+    console.log(this.registerForm);
 
     if(this.registerForm.valid){
       this.registerFormSubmit = this._userService.signUp(this.registerForm.value).subscribe({
         next:(res)=>{
            this.isLoading = false
+           console.log(" Form is valid " , this.registerForm.value);
+           
            if(res.message == 'success'){
             setTimeout(() => {
               this._router.navigate(['/login']);
@@ -77,7 +86,7 @@ export class Register  implements OnInit{
    }
 
    ngOnDestroy(): void {
-    this.registerFormSubmit.unsubscribe()
+    this.registerFormSubmit?.unsubscribe()
    }
 
 }
